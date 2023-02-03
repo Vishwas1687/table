@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,Fragment} from 'react';
 import EditableRow from './components/EditableRow.js';
 import ReadOnlyRow from './components/ReadOnlyRow.js';
 import Input from './components/Input.js';
@@ -22,25 +22,25 @@ function App() {
   const inputs=[{
     "name":"full name",
      type:"text",
-     required:true,
+     required:"required",
      placeholder:"Full Name"
   },
   {
      "name":"address",
      type:"text",
-     required:false,
+     required:"required",
      placeholder:"Address"
 },
 {
      "name":"phone number",
      type:"text",
-     required:true,
+     required:"required",
      placeholder:"Phone Number"
 },
 {
      "name":"email",
      type:"email",
-     required:true,
+     required:"required",
      placeholder:"Email"
 }
   ]
@@ -79,7 +79,45 @@ function App() {
     setEditFormData(editContact)
   }
 
+  const handleEditFormSubmit=(event)=>{
+      event.preventDefault()
+      const newContact={
+        id:contactEditId,
+         "full name":editFormData["full name"],
+        address:editFormData.address,
+        "phone number":editFormData["Phone number"],
+         email:editFormData.email
+      }
+      const index=contacts.findIndex((contact)=>contact.id===contactEditId)
+      const newContacts=[...contacts]
+      newContacts[index]=newContact
+      setContacts(newContacts)
+
+      setContactEditId(null)
+  }
+
+  const handleCancelClick=()=>{
+    setContactEditId(null)
+  }
   
+  const handleDeleteClick=(event,id)=>
+  {
+    event.preventDefault()
+      const newContacts=contacts.filter((contact)=>contact.id!==id)
+      setContacts(newContacts)
+
+  }
+  const handleEditClick=(event,contact)=>{
+      event.preventDefault()
+      setContactEditId(contact.id)
+      const existingContact={
+         "full name":contact["full name"],
+        address:contact.address,
+        "phone number":contact["phone number"],
+         email:contact.email
+      }
+      setEditFormData(existingContact)
+  }
 
   return (
     <div className="app-container">
@@ -96,13 +134,13 @@ function App() {
           </thead>
           <tbody>
           {contacts.map((contact)=>{
-            <tr>
+            <Fragment>
               {contact.id===contactEditId?
-              <EditableRow editFormData={editFormData} handleEditFormChange={handleEditFormChange} handleCancelClick={handleCancelClick}/>
+              (<EditableRow editFormData={editFormData} handleEditFormChange={handleEditFormChange} handleCancelClick={handleCancelClick}/>)
               :
-              <ReadOnlyRow contact={contact} handleEditClick={handleEditClick} handleDelete={handleDeleteClick}/>
+              (<ReadOnlyRow contact={contact} handleEditClick={handleEditClick} handleDelete={handleDeleteClick}/>)
               }
-            </tr>
+            </Fragment>
           })}
           </tbody>
         </table>

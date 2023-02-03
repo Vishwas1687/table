@@ -1,7 +1,7 @@
 import React from 'react';
 const Input = (handleFormInput,input)=>{
     return(
-      <input {...input} onChange={handleFormInput}></input>
+      <input {...input} onChange={handleFormInput}/>
     );
 }
 
