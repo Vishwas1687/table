@@ -1,19 +1,18 @@
 import React,{useState} from 'react';
-import EditableRow from './Components/EditableRow.js';
-import ReadOnlyRow from './Components/ReadOnlyRow.js';
+import EditableRow from './components/EditableRow.js';
+import ReadOnlyRow from './components/ReadOnlyRow.js';
 import Input from './components/Input.js';
 import data from './mock-data.json';
+import {nanoid} from 'nanoid';
 function App() {
   const [contacts,setContacts]=useState(data)
   const [addFormData,setAddFormData]=useState({
-    id:"",
     "full name":"",
     address:"",
     "phone number":"",
     email:""
   })
   const [editFormData,setEditFormData]=useState({
-    id:"",
     "full name":"",
     address:"",
     "phone number":"",
@@ -46,6 +45,42 @@ function App() {
 }
   ]
   const [contactEditId,setContactEditId]=useState(null)
+
+  const handleFormInput=(event)=>{
+    event.preventDefault()
+    const fieldname=event.target.getAttribute("name")
+    const fieldvalue=event.target.value
+    const newContacts={...addFormData}
+    newContacts[fieldname]=fieldvalue
+
+    setAddFormData(newContacts)
+  }
+
+  const handleAddFormSubmit=(event)=>{
+    event.preventDefault()
+      const newContact={
+        id:nanoid(),
+        "full name":addFormData["full name"],
+        address:addFormData.address,
+        "phone number":addFormData["Phone number"],
+         email:addFormData.email
+      }
+
+      const newContacts=[...contacts,newContact]
+      setContacts(newContacts)
+  }
+
+  const handleEditFormChange=(event)=>{
+    event.preventDefault()
+    const fieldname=event.target.getAttribute("name")
+    const fieldvalue=event.target.value
+    const editContact= {...editFormData}
+    editContact[fieldname]=fieldvalue
+    setEditFormData(editContact)
+  }
+
+  
+
   return (
     <div className="app-container">
       <form onSubmit={handleEditFormSubmit}>
@@ -63,9 +98,9 @@ function App() {
           {contacts.map((contact)=>{
             <tr>
               {contact.id===contactEditId?
-              <EditableRow editFormData={editFormData} handleEditRow={handleEditRow} handelEditCancel={handelEditCancel}/>
+              <EditableRow editFormData={editFormData} handleEditFormChange={handleEditFormChange} handleCancelClick={handleCancelClick}/>
               :
-              <ReadOnlyRow contact={contact} handleEditClick={handleEditClick} handleDelete={handleDelete}/>
+              <ReadOnlyRow contact={contact} handleEditClick={handleEditClick} handleDelete={handleDeleteClick}/>
               }
             </tr>
           })}
