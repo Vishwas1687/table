@@ -7,38 +7,38 @@ import {nanoid} from 'nanoid';
 function App() {
   const [contacts,setContacts]=useState(data)
   const [addFormData,setAddFormData]=useState({
-    "full name":"",
+    fullName:"",
     address:"",
-    "phone number":"",
+    phoneNumber:"",
     email:""
   })
   const [editFormData,setEditFormData]=useState({
-    "full name":"",
+    fullName:"",
     address:"",
-    "phone number":"",
+    phoneNumber:"",
     email:""
   })
 
   const inputs=[{
-    "name":"full name",
+     name:"fullName",
      type:"text",
      required:"required",
      placeholder:"Full Name"
   },
   {
-     "name":"address",
+     name:"address",
      type:"text",
      required:"required",
      placeholder:"Address"
 },
 {
-     "name":"phone number",
+     name:"phoneNumber",
      type:"text",
      required:"required",
      placeholder:"Phone Number"
 },
 {
-     "name":"email",
+     name:"email",
      type:"email",
      required:"required",
      placeholder:"Email"
@@ -48,10 +48,7 @@ function App() {
 
   const handleFormInput=(event)=>{
     event.preventDefault()
-    const fieldname=event.target.getAttribute("name")
-    const fieldvalue=event.target.value
-    const newContacts={...addFormData}
-    newContacts[fieldname]=fieldvalue
+    const newContacts={...addFormData,[event.target.name]:event.target.value}
 
     setAddFormData(newContacts)
   }
@@ -60,9 +57,9 @@ function App() {
     event.preventDefault()
       const newContact={
         id:nanoid(),
-        "full name":addFormData["full name"],
+        name:addFormData.fullName,
         address:addFormData.address,
-        "phone number":addFormData["Phone number"],
+        phoneNumber:addFormData.phoneNumber,
          email:addFormData.email
       }
 
@@ -83,9 +80,9 @@ function App() {
       event.preventDefault()
       const newContact={
         id:contactEditId,
-         "full name":editFormData["full name"],
+         name:editFormData.fullName,
         address:editFormData.address,
-        "phone number":editFormData["Phone number"],
+        phoneNumber:editFormData.phoneNumber,
          email:editFormData.email
       }
       const index=contacts.findIndex((contact)=>contact.id===contactEditId)
@@ -111,9 +108,9 @@ function App() {
       event.preventDefault()
       setContactEditId(contact.id)
       const existingContact={
-         "full name":contact["full name"],
+        fullName:contact.fullName,
         address:contact.address,
-        "phone number":contact["phone number"],
+        phoneNumber:contact.phoneNumber,
          email:contact.email
       }
       setEditFormData(existingContact)
@@ -121,7 +118,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <form onSubmit={handleEditFormSubmit}>
+      <form onSubmit={(event)=>handleEditFormSubmit(event)}>
         <table>
           <thead>
           <tr>
@@ -134,22 +131,24 @@ function App() {
           </thead>
           <tbody>
           {contacts.map((contact)=>{
+            return(
             <Fragment>
-              {contact.id===contactEditId?
-              (<EditableRow editFormData={editFormData} handleEditFormChange={handleEditFormChange} handleCancelClick={handleCancelClick}/>)
+              {contactEditId===contact.id?
+              (<EditableRow editFormData={editFormData} inputs={inputs} handleEditFormChange={handleEditFormChange} handleCancelClick={handleCancelClick}/>)
               :
-              (<ReadOnlyRow contact={contact} handleEditClick={handleEditClick} handleDelete={handleDeleteClick}/>)
+              (<ReadOnlyRow contact={contact} handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick}/>)
               }
             </Fragment>
+          )
           })}
           </tbody>
         </table>
       </form>
       <h2>Add a contact</h2>
-      <form onSubmit={handleAddFormSubmit}>
+      <form onSubmit={(event)=>handleAddFormSubmit(event)}>
           {
             inputs.map((input,index)=>{
-                <Input key={index} {...input} onChange={handleFormInput}/>
+                return <Input key={index} {...input} value={addFormData[inputs.name]} onChange={handleFormInput}/>
             })
           }
           <button type="submit">Add</button>

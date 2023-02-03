@@ -1,16 +1,18 @@
 import React from 'react';
-import Input from './Input.js';
-const EditableRow=(editFormData,handleEditFormChange,handleCancelClick)=>{
+import InputEdit from './InputEdit.js';
+const EditableRow=({editFormData,inputs,handleEditFormChange,handleCancelClick})=>{
+    console.log(editFormData)
     return (
         <tr>
-            {editFormData.map((editFormInput,index)=>{
+            {inputs.map((editFormInput,index)=>{
                 return ( 
                 <td>
-               <Input key={index} {...editFormInput} handleFormInput={handleEditFormChange}/>
+                 <InputEdit key={index} {...editFormInput} value={editFormData[editFormInput.name]}  handleEditFormChange={handleEditFormChange}/>
                </td>
                 )
             })}
-        <td><button type="submit">Save</button>
+        <td>
+        <button type="submit">Save</button>
         <button onClick={handleCancelClick}>Cancel</button>
         </td>
         </tr>
